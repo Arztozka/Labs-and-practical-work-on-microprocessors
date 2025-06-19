@@ -1,0 +1,79 @@
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    06/19/25 22:11:19
+Source1.asm						     Page 1 - 1
+
+
+				.586
+				.MODEL flat, C
+ 00000000			.DATA
+ 00000000 00000000		i_local DD 0
+ 00000000			.CODE
+				extern fun_el:near   ; объ€вление внешней функции fun_el
+				public CalcFuncValues
+ 00000000			CalcFuncValues proc C
+ 00000000  55			    push ebp
+ 00000001  8B EC		    mov ebp, esp
+ 00000003  8B 4D 08		    mov ecx, [ebp+8]    ; n (количество значений)
+ 00000006  8B 45 0C		    mov eax, [ebp+12]   ; указатель на массив результатов y
+ 00000009  C7 05 00000000 R	    mov i_local, 1      ; инициализаци€ счетчика
+	   00000001
+ 00000013			@@for_i:                ; начало цикла
+ 00000013  51			    push ecx            ; сохран€ем счетчик цикла
+ 00000014  50			    push eax            ; сохран€ем указатель на массив y
+ 00000015  DB 05 00000000 R	    fild i_local        ; загружаем i (x_i = i)
+ 0000001B  83 EC 04		    sub esp, 4
+ 0000001E  D9 1C 24		    fstp dword ptr [esp] ; передаем x_i в стек
+ 00000021  E8 00000000 E	    call fun_el         ; вызываем функцию f(x_i)
+ 00000026  83 C4 04		    add esp, 4          ; очищаем стек
+ 00000029  58			    pop eax             ; восстанавливаем указатель на массив y
+ 0000002A  8B 15 00000000 R	    mov edx, i_local
+ 00000030  4A			    dec edx             ; преобразуем в 0-based индекс
+ 00000031  D9 1C 90		    fstp dword ptr [eax + edx*4] ; сохран€ем результат в y[i-1]
+ 00000034  59			    pop ecx             ; восстанавливаем счетчик цикла
+ 00000035  FF 05 00000000 R	    inc i_local         ; увеличиваем счетчик
+ 0000003B  E2 D6		    loop @@for_i        ; конец цикла
+ 0000003D  8B E5		    mov esp, ebp
+ 0000003F  5D			    pop ebp
+ 00000040  C3			    ret
+ 00000041			CalcFuncValues endp
+				End
+Microsoft (R) Macro Assembler Version 14.42.34435.0	    06/19/25 22:11:19
+Source1.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000004 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000041 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+CalcFuncValues . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000041 Public C
+  @@for_i  . . . . . . . . . . .	L Near	 00000013 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000001h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+fun_el . . . . . . . . . . . . .	L Near	 00000000 FLAT	External C
+i_local  . . . . . . . . . . . .	DWord	 00000000 _DATA	
+
+	   0 Warnings
+	   0 Errors
