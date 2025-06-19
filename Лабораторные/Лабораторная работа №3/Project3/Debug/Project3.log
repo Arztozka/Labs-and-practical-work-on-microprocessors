@@ -1,0 +1,6 @@
+﻿  Assembling Source.asm...
+Source.asm(21): error A2026: constant expected
+Source.asm(22): error A2026: constant expected
+Source.asm(33): error A2026: constant expected
+Source.asm(39): error A2026: constant expected
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\BuildCustomizations\masm.targets(70,5): error MSB3721: выход из команды "ml.exe /c /nologo /Zi /Fo"Debug\Source.obj" /W3 /errorReport:prompt  /TaSource.asm" с кодом "1".
