@@ -1,0 +1,30 @@
+#include <8051.h>
+
+void tput (unsigned char ch)
+{
+	SBUF = ch;
+	while(!TI);
+	TI = 0;
+}
+
+void main()
+{
+	char z;
+	int i;
+	unsigned char data[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E'};
+	
+	PCON = 0b10000000;	// SMOD = 1, dlya skorosti 62,5 kHz
+	SCON = 0b11101000;	// 3 rejim raboty posledovatel'nogo porta
+	TMOD = 0b00100000;	// Timer v rejim 2
+	TH1 = 0xFF;			// Iz tablicy
+	
+	TR1 = 1;			// Zapusk timera
+
+	tput('\n');
+	
+	for (i = 0; i < 15; i++)
+	{
+		tput(data[i]);
+	}
+	while(1) {}
+}
