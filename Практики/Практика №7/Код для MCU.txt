@@ -1,0 +1,58 @@
+#include <htc.h>
+
+#define tmpCnt 5620
+
+void main()
+{
+	int lvlSHIM;
+	int cnt;
+	
+	lvlSHIM = 5;
+	P04 = 0; 	// bool pin dlya udobstva
+
+	P1 = 0xFE;
+	RCAP2H = 0b00111100;	// Starshaya chast'	 \
+	RCAP2L = 0b10110000;	// Mladshaya chast' ->\ R = 0b0011110010110000 = 15536
+	T2CON &= 0xFC;
+	ET2 = 1;
+	EA = 1;
+	T2CON |= 0x4;
+	while (1) 
+	{
+		cnt = tmpCnt/lvlSHIM;
+		if (lvlSHIM == 2) { cnt = 1830; }
+		
+		while (TF2 == 0) 
+		{
+			if (P00 != 1)
+			{
+				if (lvlSHIM > 2 && !P04) { lvlSHIM--; P04 = 1; }
+			}
+
+			if (P07 != 1)
+			{
+				if (lvlSHIM < 5 && !P04) { lvlSHIM++; P04 = 1; }
+			}
+		}
+
+		TF2 = 0;
+		P10 = 1;
+
+		while (cnt != 0) 
+		{
+			cnt--;
+			if (P00 != 1)
+			{
+				if (lvlSHIM > 2 && !P04) { lvlSHIM--; P04 = 1; }
+			}
+
+			if (P07 != 1)
+			{
+				if (lvlSHIM < 5 && !P04) { lvlSHIM++; P04 = 1; }
+			} 
+		}
+		P04 = 0;
+		P10 = 0;
+		cnt = tmpCnt - tmpCnt*(10 - lvlSHIM); 
+	}
+}
